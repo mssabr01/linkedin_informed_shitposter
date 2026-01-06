@@ -1,0 +1,67 @@
+name: Security Article Workflow
+
+on:
+  schedule:
+    # Run daily at 6 AM eastern, mon and thurs
+    - cron: '0 11 * * 1,4'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read      # To checkout code
+
+jobs:
+  fetch-articles:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run security article workflow
+      env:
+        CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+      run: |
+        python security_article_workflow.py
+    
+    - name: Upload results as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-articles-${{ github.run_id }}
+        path: |
+          security_post_*.json
+          
+    - name: Extract and display LinkedIn post
+      run: |
+        echo "## LinkedIn Post Generated" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        python -c "
+import json
+import glob
+
+files = glob.glob('security_post_*.json')
+if files:
+    with open(max(files), 'r') as f:
+        data = json.load(f)
+    print(data.get('linkedin_post', 'No post generated'))
+    
+    print('\n---\n')
+    print(f\"**Total Articles Found:** {data.get('total_articles_found', 0)}\")
+    print(f\"**Articles Selected:** {len(data.get('selected_articles', []))}\")
+    print('\n### Selected Articles:')
+    for i, article in enumerate(data.get('selected_articles', []), 1):
+        print(f\"{i}. [{article['title']}]({article['url']})\")
+        print(f\"   - Source: {article['source']}\")
+        print(f\"   - Published: {article['published']}\")
+" >> $GITHUB_STEP_SUMMARY
+
