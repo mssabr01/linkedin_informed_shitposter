@@ -366,6 +366,7 @@ class LinkedInPostGenerator:
 
 Mehdi's voice:
 - Direct, no fluff
+- Mildly bro-y. A youthful tone that expresses excitement.
 - Shares practical lessons for building security programs
 - Speaks founder-to-founder, not consultant-to-client
 - Uses "I" not "we"
