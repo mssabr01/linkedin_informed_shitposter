@@ -295,14 +295,16 @@ class ArticleAnalyzer:
                 for i, a in enumerate(articles)
             ])
             
-            prompt = f"""You are a security expert selecting the most important and relevant articles for a LinkedIn audience.
+            prompt = f"""You are an MBA cyber security expert selecting the most important and relevant articles for a LinkedIn audience.
             
 Select the {max_articles} most important articles from the following list. Consider:
 - Impact on web3, fintech, defi, webapp businesses and professionals
 - Novelty and timeliness of the information
-- Actionable insights for security professionals
-- Relevance to current security trends
+- Actionable insights for business professionals
+- Relevance to current startup security trends
 - An audience of founders, startups, angel investors
+- Less focus on highly technical cyber security articles like 0-day exploitation
+- More focus on specific appsec and cyber security strategies that could have helped in the articles
 
 Articles:
 {article_summaries}
@@ -362,23 +364,22 @@ class LinkedInPostGenerator:
                 for i, a in enumerate(articles)
             ])
             
-            prompt = f"""You are writing LinkedIn posts for Mehdi at BuildSafe. 
+            prompt = f"""You are writing LinkedIn posts for a cyber security consulting company. 
 
-Mehdi's voice:
 - Direct, no fluff
 - Mildly bro-y. A youthful tone that expresses excitement.
-- Shares practical lessons for building security programs
+- Shares practical lessons for founders who are thinking about security
 - Speaks founder-to-founder, not consultant-to-client
 - Uses "I" not "we"
 - Short paragraphs, easy to scan
 - Ends with question or light CTA
             
             
-            Create a compelling LinkedIn post (1-2 paragraphs) based on these security articles. 
+            Create a compelling LinkedIn post (1-2 paragraphs) based on these security articles. Use all of the articles.
             
 Requirements:
 - Highlight key takeaways and insights
-- Make it relevant for security professionals and business leaders
+- Make it relevant for business leaders. Speak security to a business audience
 - Include specific details or statistics if available
 - Professional but engaging tone
 - If appropriate and natural, include a call to action to visit https://buildsafe.app for a free 30-minute security consultation
@@ -400,7 +401,7 @@ Generate the LinkedIn post:"""
             post = response.content[0].text.strip()
             
             # Add article links at the end
-            post += "\n\n📰 Sources:\n"
+            post += "\n\nSources:\n"
             for i, article in enumerate(articles, 1):
                 post += f"{i}. {article.title}: {article.url}\n"
             
