@@ -262,8 +262,8 @@ class ArticleAnalyzer:
         
         # Check for high-impact keywords
         high_impact_words = [
-            "critical", "breach", "hack", "vulnerability", "exploit",
-            "million", "billion", "attack", "compromised", "urgent"
+            "breach", "hack", "vulnerability", "exploit", "defi", "fintech", "startup"
+            "million", "billion", "attack", "merge", "urgent", "web3", "smart contract",
         ]
         
         text = f"{article.title} {article.description}".lower()
